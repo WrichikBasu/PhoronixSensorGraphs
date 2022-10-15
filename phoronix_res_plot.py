@@ -86,6 +86,11 @@ def plot_phoronix_result(res_name, sensors, plt_layout,
     count = 1
     i = 0
 
+    def get_data(result):
+        y_val = np.asarray(list(map(float, list(result['Data']['Entry'][-1]['Value'].split(",")))))
+        x_val = np.asarray([10 * (j + 2) for j in range(len(y_val))])
+        return y_val, x_val
+
     fig, axs = plt.subplots(plt_layout[0], plt_layout[1], sharex='all')
 
     while i < len(results):
@@ -128,8 +133,7 @@ def plot_phoronix_result(res_name, sensors, plt_layout,
                 ############################################################################################
                 while title != 'CPU Usage (Summary) Monitor':
                     # Get data and plot for the current value of `res`
-                    data_y = np.asarray(list(map(float, list(res['Data']['Entry'][1]['Value'].split(",")))))
-                    data_x = np.asarray([10 * (j + 2) for j in range(len(data_y))])
+                    data_y, data_x = get_data(res)
                     lab = "CPU" + str(cpu_count)
 
                     plt.plot(data_x, data_y, '.-', label=lab)
@@ -147,8 +151,7 @@ def plot_phoronix_result(res_name, sensors, plt_layout,
                 plt.legend(loc="lower right", ncol=2)
                 count += 1
 
-        data_y = np.asarray(list(map(float, list(res['Data']['Entry'][-1]['Value'].split(",")))))
-        data_x = np.asarray([10 * (j + 2) for j in range(len(data_y))])
+        data_y, data_x = get_data(res)
 
         plt.subplot(plt_layout[0], plt_layout[1], count)
         plt.plot(data_x, data_y, '.r-')
