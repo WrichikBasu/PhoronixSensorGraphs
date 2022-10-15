@@ -1,31 +1,20 @@
 import os
 import pwd
-import matplotlib.pyplot as plt
-import xmltodict
-import numpy as np
 
-memo = {}
+import matplotlib.pyplot as plt
+import numpy as np
+import xmltodict
+
+__memo__ = {}
 
 
 def __dp__(n, left):  # returns tuple (cost, [factors])
     """
     A function to get a specific no. of factors of a natural number.
     COURTESY: https://stackoverflow.com/a/28062998/8387076
-
-    Parameters
-    ----------
-    n : int
-        The number whose factors are to be found out.
-    left : int
-        The number of factors needed.
-
-    Returns
-    -------
-    tuple : (cost, [factors])
-        [factors] is the list of factors of the number `left`.
     """
-    if (n, left) in memo:
-        return memo[(n, left)]
+    if (n, left) in __memo__:
+        return __memo__[(n, left)]
 
     if left == 1:
         return n, [n]
@@ -41,11 +30,19 @@ def __dp__(n, left):  # returns tuple (cost, [factors])
                 best_tuple = [i] + rem[1]
         i += 1
 
-    memo[(n, left)] = (best, best_tuple)
-    return memo[(n, left)]
+    __memo__[(n, left)] = (best, best_tuple)
+    return __memo__[(n, left)]
 
 
-def plot_phoronix_result(res_name, sensors, plt_layout,
+def __is_prime__(num):
+    for i in range(2, num):
+        if num % i == 0:
+            return False
+
+    return True
+
+
+def plot_phoronix_result(res_name, sensors, plt_layout="auto",
                          res_path="/home/" + pwd.getpwuid(os.getuid()).pw_name + "/.phoronix-test-suite/test-results/",
                          res_file="composite.xml", cpu_usage_summary_only=True, cpu_usage_separate_plots=False):
     """
@@ -60,9 +57,10 @@ def plot_phoronix_result(res_name, sensors, plt_layout,
         have entries for each core as well as a summary. By default, only the summary graph is plotted. To plot
         data for each and every core, see `cpu_usage_summary_only` and `cpu_usage_separate_plots` parameters
         for sensor cpu.usage.
-    plt_layout : tuple
-        The layout of the subplots. The tuple should be of the form (nrows, ncols), which means that there will be
-        'nrows' number of rows and 'ncols' number of columns in the subplot. The value (nrows * ncols) should always
+    plt_layout : str or tuple, optional
+        The layout of the subplots. The default value is "auto", which implies the program should itself calculate the
+        layout of the subplots. The user may supply a tuple of the form (nrow, ncol), which means that there will be
+        'nrow' number of rows and 'ncol' number of columns in the subplot. The value (nrow * ncol) should always
         be the smallest composite number >= the number of plots you expect. For example, if you expect 5 plots, then
         'plt_layout' can be (2, 3) or (3, 2) but NOT (2, 2).
     res_path : str, optional
@@ -82,6 +80,74 @@ def plot_phoronix_result(res_name, sensors, plt_layout,
         doc = xmltodict.parse(fd.read())  # Read the xml file
 
     results = doc['PhoronixTestSuite']['Result']
+
+    def get_cpu_cores():
+        """
+        Count the number of CPU cores (actually threads).
+
+        Returns
+        -------
+        int
+            The number of CPUs.
+        """
+        hardware = doc['PhoronixTestSuite']['System']['Hardware']
+        ind = hardware.find('/') + 2
+
+        no_of_threads = ""
+
+        while hardware[ind] != ' ':
+            no_of_threads += hardware[ind]
+            ind += 1
+
+        return int(no_of_threads)
+
+    def count_plots():
+        """
+        Counts the number of plots.
+
+        Returns
+        -------
+        int
+            The number of subplots.
+        """
+        num = len(sensors)
+
+        if 'cpu.usage' in sensors:
+            if not cpu_usage_summary_only:
+                if cpu_usage_separate_plots:
+                    num += get_cpu_cores()
+                else:
+                    num += 1
+
+        return num
+
+    def get_plot_layout():
+        """
+        Compute the layout of the subplots.
+
+        Returns
+        -------
+        tuple
+            The layout of the subplots in the form (nrow, ncol).
+        """
+
+        num_plots = count_plots()
+
+        if num_plots == 1:
+            return 1, 1
+        if num_plots == 2:
+            return 2, 1
+        elif num_plots == 3 or num_plots == 4:
+            return 2, 2
+        else:
+            if __is_prime__(num_plots):
+                num_plots += 1
+            factors = __dp__(num_plots, 2)[1]
+            return factors[0], int(factors[1])
+
+    # Set the layout:
+    if plt_layout == "auto":
+        plt_layout = get_plot_layout()
 
     count = 1
     i = 0
@@ -106,10 +172,10 @@ def plot_phoronix_result(res_name, sensors, plt_layout,
 
         if arg == 'cpu.usage':
 
-            ####################################################################
+            #######################################################################
             # If cpu_usage_summary_only = True and the current data is
             # not for the CPU usage summary, then continue to next iteration.
-            ####################################################################
+            #######################################################################
             if cpu_usage_summary_only and title != 'CPU Usage (Summary) Monitor':
                 i += 1
                 continue
@@ -132,6 +198,7 @@ def plot_phoronix_result(res_name, sensors, plt_layout,
                 # summary data after listing the data for cores separately.
                 ############################################################################################
                 while title != 'CPU Usage (Summary) Monitor':
+
                     # Get data and plot for the current value of `res`
                     data_y, data_x = get_data(res)
                     lab = "CPU" + str(cpu_count)
@@ -147,7 +214,7 @@ def plot_phoronix_result(res_name, sensors, plt_layout,
                 plt.title("CPU per-core usage")
                 plt.gca().yaxis.grid(True)
                 plt.ylabel(res['Scale'])
-                plt.tick_params(axis='x', which='both', labelbottom=False)
+                plt.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=False)
                 plt.legend(loc="lower right", ncol=2)
                 count += 1
 
@@ -163,8 +230,8 @@ def plot_phoronix_result(res_name, sensors, plt_layout,
         plt.tick_params(
             axis='x',  # changes apply to the x-axis
             which='both',  # both major and minor ticks are affected
-            # bottom=False,  # ticks along the bottom edge are off
-            # top=False,  # ticks along the top edge are off
+            bottom=False,  # ticks along the bottom edge are off
+            top=False,  # ticks along the top edge are off
             labelbottom=False)  # labels along the bottom edge are off
 
         # Switch on grid for the y-axis ONLY.
@@ -176,13 +243,17 @@ def plot_phoronix_result(res_name, sensors, plt_layout,
         i += 1
 
     plt.suptitle(doc['PhoronixTestSuite']['Generated']['Title'], fontweight='bold')
-    plt.tight_layout()
 
     # Delete subplot(s) which do not have any plot
-    # Courtesy: https://stackoverflow.com/a/69886723/8387076
-    for ax in axs.flat:
-        if not bool(ax.has_data()):
-            fig.delaxes(ax)  # delete if nothing is plotted in the ax object
+    # Adapted from: https://stackoverflow.com/a/69886723/8387076
+    try:  # Necessary because if we have to plot one parameter, axs.flat will throw an exception.
+        for ax in axs.flat:
+            if not bool(ax.has_data()):
+                fig.delaxes(ax)  # delete if nothing is plotted in the ax object
+    except TypeError:
+        pass
+
+    plt.tight_layout()
 
     # Ensure tight layout even when the window size is changed by handling window resize event.
     # Courtesy: https://stackoverflow.com/a/47838687/8387076
@@ -195,6 +266,5 @@ def plot_phoronix_result(res_name, sensors, plt_layout,
     plt.show()
 
 
-plot_phoronix_result("b6dfb1240a59bc2e9ebba504", ('cpu.temp', 'cpu.usage', 'gpu.usage', 'gpu.temp',
-                                                  'sys.temp', 'memory.usage', 'cpu.freq', 'gpu.freq'), (4, 4),
-                     cpu_usage_summary_only=False, cpu_usage_separate_plots=True)
+plot_phoronix_result("b6dfb1240a59bc2e9ebba504", ('cpu.temp', 'cpu.usage', 'gpu.usage', 'gpu.temp'),
+                     cpu_usage_summary_only=False, cpu_usage_separate_plots=False)
