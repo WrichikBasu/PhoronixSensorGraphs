@@ -13,6 +13,7 @@ def __dp__(n, left):  # returns tuple (cost, [factors])
     A function to get a specific no. of factors of a natural number.
     COURTESY: https://stackoverflow.com/a/28062998/8387076
     """
+
     if (n, left) in __memo__:
         return __memo__[(n, left)]
 
@@ -48,6 +49,13 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
     """
     A function to plot the results created by Phoronix Test Suite.
 
+    Does NOT support sensor `cpu.freq` yet. See issue:
+    https://github.com/phoronix-test-suite/phoronix-test-suite/issues/680
+
+    Example usage:
+    >>> from phoronix_res_plot import plot_phoronix_result
+    >>> plot_phoronix_result("b6dfb1240a59bc2e9ebba504", ('cpu.temp', 'cpu.usage', 'gpu.usage', 'gpu.temp'))
+
     Parameters
     ----------
     res_name : str
@@ -81,6 +89,15 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
 
     results = doc['PhoronixTestSuite']['Result']
 
+    #########################################
+    # NO SUPPORT FOR `cpu.freq` as of now.
+    #########################################
+    if 'cpu.freq' in sensors:
+        new_sensors = list(sensors)
+        new_sensors.remove('cpu.freq')
+        sensors = tuple(new_sensors)
+        print("NO SUPPORT FOR `cpu.freq`. Please see documentation.")
+
     def get_cpu_cores():
         """
         Count the number of CPU cores (actually threads).
@@ -90,6 +107,7 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
         int
             The number of CPUs.
         """
+
         hardware = doc['PhoronixTestSuite']['System']['Hardware']
         ind = hardware.find('/') + 2
 
@@ -110,6 +128,7 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
         int
             The number of subplots.
         """
+
         num = len(sensors)
 
         if 'cpu.usage' in sensors:
@@ -264,7 +283,3 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
     _ = fig.canvas.mpl_connect('resize_event', on_resize)
 
     plt.show()
-
-
-plot_phoronix_result("b6dfb1240a59bc2e9ebba504", ('cpu.temp', 'cpu.usage', 'gpu.usage', 'gpu.temp'),
-                     cpu_usage_summary_only=False, cpu_usage_separate_plots=False)
