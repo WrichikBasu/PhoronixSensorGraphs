@@ -4,6 +4,7 @@ import pwd
 import matplotlib.pyplot as plt
 import numpy as np
 import xmltodict
+import seaborn as sns
 
 __memo__ = {}
 
@@ -168,6 +169,8 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
     if plt_layout == "auto":
         plt_layout = get_plot_layout()
 
+    colour_list = sns.color_palette("viridis", n_colors=count_plots())
+
     count = 1
     i = 0
 
@@ -207,6 +210,8 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
             ####################################################################################################
             if not cpu_usage_summary_only and not cpu_usage_separate_plots:
 
+                clrs = sns.color_palette('rocket_r', n_colors=get_cpu_cores()+2)
+
                 plt.subplot(plt_layout[0], plt_layout[1], count)  # All cores on one subplot
 
                 cpu_count = 0
@@ -222,7 +227,8 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
                     data_y, data_x = get_data(res)
                     lab = "CPU" + str(cpu_count)
 
-                    plt.plot(data_x, data_y, '.-', label=lab)
+                    line = plt.plot(data_x, data_y, '.-', label=lab)
+                    line[0].set_color(clrs[cpu_count])
 
                     # Initialise `res` to next value in the `results` list
                     i += 1
@@ -240,7 +246,8 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
         data_y, data_x = get_data(res)
 
         plt.subplot(plt_layout[0], plt_layout[1], count)
-        plt.plot(data_x, data_y, '.r-')
+        line = plt.plot(data_x, data_y, '.-')
+        line[0].set_color(colour_list[count-1])
 
         plt.title(title.replace(" Monitor", ""))
 
