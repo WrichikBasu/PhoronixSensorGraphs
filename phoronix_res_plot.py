@@ -50,7 +50,7 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
     """
     A function to plot the results created by Phoronix Test Suite.
 
-    Does NOT support sensor `cpu.freq` yet. See issue:
+    Does NOT support sensor `cpu.freq` and `cpu.peak-freq` yet. See this issue:
     https://github.com/phoronix-test-suite/phoronix-test-suite/issues/680
 
     Example usage:
@@ -90,14 +90,19 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
 
     results = doc['PhoronixTestSuite']['Result']
 
-    #########################################
-    # NO SUPPORT FOR `cpu.freq` as of now.
-    #########################################
+    ###############################################################
+    # NO SUPPORT FOR `cpu.freq` and `cpu.peak-freq` as of now.
+    ###############################################################
     if 'cpu.freq' in sensors:
         new_sensors = list(sensors)
         new_sensors.remove('cpu.freq')
         sensors = tuple(new_sensors)
         print("NO SUPPORT FOR `cpu.freq`. Please see documentation.")
+    if 'cpu.peak-freq' in sensors:
+        new_sensors = list(sensors)
+        new_sensors.remove('cpu.peak-freq')
+        sensors = tuple(new_sensors)
+        print("NO SUPPORT FOR `cpu.peak-freq`. Please see documentation.")
 
     def get_cpu_cores():
         """
