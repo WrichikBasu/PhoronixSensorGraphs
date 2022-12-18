@@ -67,7 +67,7 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
     """
     A function to plot the results created by Phoronix Test Suite.
 
-    Does NOT support sensor `cpu.freq` and `cpu.peak-freq` yet. See this issue:
+    Does NOT support the sensors `cpu.freq`, `cpu.peak-freq` and and `gpu.freq` as of now. See this issue:
     https://github.com/phoronix-test-suite/phoronix-test-suite/issues/680
 
     Example usage:
@@ -107,9 +107,9 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
 
     results = doc['PhoronixTestSuite']['Result']
 
-    ###############################################################
-    # NO SUPPORT FOR `cpu.freq` and `cpu.peak-freq` as of now.
-    ###############################################################
+    ##########################################################################
+    # NO SUPPORT FOR `cpu.freq`, `cpu.peak-freq` and `gpu.freq` as of now.
+    ##########################################################################
     if 'cpu.freq' in sensors:
         new_sensors = list(sensors)
         new_sensors.remove('cpu.freq')
@@ -120,6 +120,11 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
         new_sensors.remove('cpu.peak-freq')
         sensors = tuple(new_sensors)
         print("NO SUPPORT FOR `cpu.peak-freq`. Please see documentation.")
+    if 'gpu.freq' in sensors:
+        new_sensors = list(sensors)
+        new_sensors.remove('gpu.freq')
+        sensors = tuple(new_sensors)
+        print("NO SUPPORT FOR `gpu.freq`. Please see documentation.")
 
     def get_cpu_cores():
         """
