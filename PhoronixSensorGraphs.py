@@ -26,7 +26,39 @@ import seaborn as sns
 
 class PhoronixSensorGraphs:
 
-    __memo = {}
+    def __init__(self):
+
+        self.__memo = {}
+
+        self.__res_path: str = "/home/" + pwd.getpwuid(os.getuid()).pw_name + "/.phoronix-test-suite/test-results/"
+
+        self.__res_file: str = "composite.xml"
+
+        self.__plt_layout: str | tuple = "auto"
+
+    @property
+    def res_path(self):
+        return self.__res_path
+
+    @res_path.setter
+    def res_path(self, value: str):
+        self.__res_path = value
+
+    @property
+    def res_file(self):
+        return self.__res_file
+
+    @res_file.setter
+    def res_file(self, value: str):
+        self.__res_file = value
+
+    @property
+    def plt_layout(self):
+        return self.__plt_layout
+
+    @plt_layout.setter
+    def plt_layout(self, value: str | tuple):
+        self.__plt_layout = value
 
     def __dp(self, n, left) -> tuple:  # returns tuple (cost, [factors])
         """
@@ -61,11 +93,8 @@ class PhoronixSensorGraphs:
 
         return True
 
-    def plot_pts_sensor_data(self, res_name: str, sensors: tuple, plt_layout="auto",
-                             res_path: str = "/home/" + pwd.getpwuid(
-                                 os.getuid()).pw_name + "/.phoronix-test-suite/test-results/",
-                             res_file: str = "composite.xml",
-                             cpu_usage_summary_only: bool = True, cpu_usage_separate_plots: bool = False):
+    def plot_sensor_data(self, res_name: str, sensors: tuple, cpu_usage_summary_only: bool = True,
+                         cpu_usage_separate_plots: bool = False):
         """
         A function to plot the results created by Phoronix Test Suite.
 
@@ -83,16 +112,6 @@ class PhoronixSensorGraphs:
             have entries for each core as well as a summary. By default, only the summary graph is plotted. To plot
             data for each and every core, see `cpu_usage_summary_only` and `cpu_usage_separate_plots` parameters
             for sensor cpu.usage.
-        plt_layout : str or tuple, optional
-            The layout of the subplots. The default value is "auto", which implies the program should itself calculate the
-            layout of the subplots. The user may supply a tuple of the form (nrow, ncol), which means that there will be
-            'nrow' number of rows and 'ncol' number of columns in the subplot. The value (nrow * ncol) should always
-            be the smallest composite number >= the number of plots you expect. For example, if you expect 5 plots, then
-            'plt_layout' can be (2, 3) or (3, 2) but NOT (2, 2).
-        res_path : str, optional
-            The path to the directory of the result file.
-        res_file : str, optional
-            The name of the result file.
         cpu_usage_summary_only : bool, optional
             Used only if plt_args contains 'cpu.usage'. If true, only the CPU Usage Summary data will be plotted, otherwise
             per-CPU usage data will also be plotted.
@@ -101,7 +120,7 @@ class PhoronixSensorGraphs:
             separate graphs.
         """
 
-        file = res_path + res_name + "/" + res_file
+        file = self.__res_path + res_name + "/" + self.__res_file
         with open(file) as fd:
             doc = xmltodict.parse(fd.read())  # Read the xml file
 
@@ -193,8 +212,13 @@ class PhoronixSensorGraphs:
                 return factors[0], int(factors[1])
 
         # Set the layout:
-        if plt_layout == "auto":
+        if self.__plt_layout == "auto":
             plt_layout: tuple = get_plot_layout()
+        else:
+            if type(self.__plt_layout) == tuple:
+                plt_layout: tuple = self.__plt_layout
+            else:
+                raise ValueError("Error in plt_layout: Should be a tuple, got some other type instead.")
 
         colour_list = sns.color_palette("viridis", n_colors=count_plots())
 
