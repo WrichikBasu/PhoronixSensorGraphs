@@ -61,9 +61,10 @@ def __is_prime__(num):
     return True
 
 
-def plot_phoronix_result(res_name, sensors, plt_layout="auto",
-                         res_path="/home/" + pwd.getpwuid(os.getuid()).pw_name + "/.phoronix-test-suite/test-results/",
-                         res_file="composite.xml", cpu_usage_summary_only=True, cpu_usage_separate_plots=False):
+def plot_phoronix_result(res_name: str, sensors: tuple, plt_layout="auto",
+                         res_path: str = "/home/" + pwd.getpwuid(os.getuid()).pw_name + "/.phoronix-test-suite/test-results/",
+                         res_file: str = "composite.xml",
+                         cpu_usage_summary_only: bool = True, cpu_usage_separate_plots: bool = False):
     """
     A function to plot the results created by Phoronix Test Suite.
 
@@ -93,10 +94,10 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
         The path to the directory of the result file.
     res_file : str, optional
         The name of the result file.
-    cpu_usage_summary_only : boolean, optional
+    cpu_usage_summary_only : bool, optional
         Used only if plt_args contains 'cpu.usage'. If true, only the CPU Usage Summary data will be plotted, otherwise
         per-CPU usage data will also be plotted.
-    cpu_usage_separate_plots : boolean, optional
+    cpu_usage_separate_plots : bool, optional
         Used only if cpu_usage_summary_only = True. If true, CPU Usage data for each CPU core/thread will be plotted in
         separate graphs.
     """
@@ -126,7 +127,7 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
         sensors = tuple(new_sensors)
         print("NO SUPPORT FOR `gpu.freq`. Please see documentation.")
 
-    def get_cpu_cores():
+    def get_cpu_cores() -> int:
         """
         Count the number of CPU cores (actually threads).
 
@@ -147,7 +148,7 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
 
         return int(no_of_threads)
 
-    def count_plots():
+    def count_plots() -> int:
         """
         Counts the number of plots.
 
@@ -168,7 +169,7 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
 
         return num
 
-    def get_plot_layout():
+    def get_plot_layout() -> tuple:
         """
         Compute the layout of the subplots.
 
@@ -194,7 +195,7 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
 
     # Set the layout:
     if plt_layout == "auto":
-        plt_layout = get_plot_layout()
+        plt_layout: tuple = get_plot_layout()
 
     colour_list = sns.color_palette("viridis", n_colors=count_plots())
 
@@ -237,7 +238,7 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
             ####################################################################################################
             if not cpu_usage_summary_only and not cpu_usage_separate_plots:
 
-                clrs = sns.color_palette('rocket_r', n_colors=get_cpu_cores()+2)
+                clrs = sns.color_palette('rocket_r', n_colors=get_cpu_cores() + 2)
 
                 plt.subplot(plt_layout[0], plt_layout[1], count)  # All cores on one subplot
 
@@ -249,7 +250,6 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
                 # summary data after listing the data for cores separately.
                 ############################################################################################
                 while title != 'CPU Usage (Summary) Monitor':
-
                     # Get data and plot for the current value of `res`
                     data_y, data_x = get_data(res)
                     lab = "CPU" + str(cpu_count)
@@ -274,7 +274,7 @@ def plot_phoronix_result(res_name, sensors, plt_layout="auto",
 
         plt.subplot(plt_layout[0], plt_layout[1], count)
         line = plt.plot(data_x, data_y, '.-')
-        line[0].set_color(colour_list[count-1])
+        line[0].set_color(colour_list[count - 1])
 
         plt.title(title.replace(" Monitor", ""))
 
