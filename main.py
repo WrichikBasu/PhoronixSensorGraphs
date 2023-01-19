@@ -1,7 +1,19 @@
 from PhoronixSensorGraphs import PhoronixSensorGraphs
 
 if __name__ == '__main__':
-    # Sample usage:
+
+    # Create an instance of the class:
     psg = PhoronixSensorGraphs()
-    psg.plot_sensor_data('8805d16735c38a019eec9b19',
+
+    # Optionally set the path of results directory:
+    # psg.res_path = "/path/to/results/directory"
+
+    # Optionally set the name of the result .xml file:
+    # psg.res_file = "composite.xml"
+
+    # Optionally set the layout of the subplots:
+    # psg.plt_layout = "auto"
+
+    # Call the function with the required parameters:
+    psg.plot_sensor_data('Test_result_name',
                          ('cpu.temp', 'gpu.temp', 'cpu.usage', 'gpu.usage', 'memory.usage', 'sys.temp'))

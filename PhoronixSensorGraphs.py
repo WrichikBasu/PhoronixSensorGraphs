@@ -16,12 +16,13 @@
 ################################################################################
 
 import os
+import platform
 import pwd
 
 import matplotlib.pyplot as plt
 import numpy as np
-import xmltodict
 import seaborn as sns
+import xmltodict
 
 
 class PhoronixSensorGraphs:
@@ -36,6 +37,12 @@ class PhoronixSensorGraphs:
 
         self.__plt_layout: str | tuple = "auto"
 
+        if platform.system() == 'Windows' or platform.system() == 'Darwin':
+            print("CAUTION!")
+            print(
+                "This program is designed to work on Linux. Please set the results directory and file name if using "
+                "in some other OS.")
+
     @property
     def res_path(self):
         return self.__res_path
@@ -43,6 +50,7 @@ class PhoronixSensorGraphs:
     @res_path.setter
     def res_path(self, value: str):
         self.__res_path = value
+        print("New results directory set.")
 
     @property
     def res_file(self):
@@ -50,7 +58,10 @@ class PhoronixSensorGraphs:
 
     @res_file.setter
     def res_file(self, value: str):
+        if os.path.splitext(value)[1] != ".xml":
+            raise ValueError("File not of type `.xml`.")
         self.__res_file = value
+        print("New result filename set.")
 
     @property
     def plt_layout(self):
@@ -59,6 +70,7 @@ class PhoronixSensorGraphs:
     @plt_layout.setter
     def plt_layout(self, value: str | tuple):
         self.__plt_layout = value
+        print("New plot layout set.")
 
     def __dp(self, n, left) -> tuple:  # returns tuple (cost, [factors])
         """
@@ -120,7 +132,13 @@ class PhoronixSensorGraphs:
             separate graphs.
         """
 
-        file = self.__res_path + res_name + "/" + self.__res_file
+        if platform.system() == 'Windows':
+            file = self.__res_path + res_name + "\\" + self.__res_file
+            if "/" in file:
+                raise ValueError("File path not set properly on Windows.")
+        else:
+            file = self.__res_path + res_name + "/" + self.__res_file
+
         with open(file) as fd:
             doc = xmltodict.parse(fd.read())  # Read the xml file
 
