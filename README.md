@@ -18,19 +18,12 @@ cd pts-sensor-graphs/
 
 ## Usage
 
-Open a file and paste the following:
+For quickly generating graphs, open the `main.py` file, edit the test result name and the sensors you want to plot, and run it.
 
-```python
-from PhoronixSensorGraphs import *
+Make sure to replace the `Test_result_name` with the result name you had set.
 
-if __name__ == '__main__':
-    # Sample usage:
-    PhoronixSensorGraphs().plot_sensor_data('<TEST_RESULT_NAME>',
-                                            ('cpu.temp', 'gpu.temp', 'cpu.usage', 'gpu.usage', 'memory.usage',
-                                             'sys.temp'))
-```
 
-Make sure to replace the `<TEST_RESULT_NAME>` with the result name you had set.
+## Documentation
 
-See the documentation for more information.
+Refer to the Wiki section. (Under construction)
 
