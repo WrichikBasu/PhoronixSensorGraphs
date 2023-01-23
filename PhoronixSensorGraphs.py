@@ -36,8 +36,7 @@ class PhoronixSensorGraphs:
     going into further details:
     >>> from PhoronixSensorGraphs import *
     >>> psg = PhoronixSensorGraphs()
-    >>> psg.plot_sensor_data('Test_result_name', ('cpu.temp', 'gpu.temp', 'cpu.usage',  \
-    'gpu.usage', 'memory.usage', 'sys.temp'))
+    >>> psg.plot_sensor_data('Test_result_name', ('cpu.temp', 'gpu.temp', 'cpu.usage',  'gpu.usage', 'memory.usage', 'sys.temp'))
     Don't forget to replace `Test_result_name` with the name of the stress test.
 
     You can set a custom result directory using
