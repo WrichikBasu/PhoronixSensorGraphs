@@ -1,0 +1,35 @@
+site_name: PhoronixSensorGraphs
+
+theme:
+  name: "material"
+
+#plugins:
+#  - mkdocstrings:
+#      enabled: !ENV [ENABLE_MKDOCSTRINGS, true]
+#      default_handler: python
+#      handlers:
+#        python:
+#          options:
+#            show_source: false
+
+plugins:
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: false
+            show_signature_annotations: true
+#            show_root_heading: true
+            show_root_toc_entry: false
+            members_order: "source"
+            docstring_style: "numpy"
+            filters: ["!^__"]
+
+nav:
+  - Home: index.md
+  - "Quickstart": quick_usage_guide.md
+  - Documentation: documentation.md
+
+watch:
+  - PhoronixSensorGraphs.py
+
