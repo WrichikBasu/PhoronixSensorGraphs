@@ -26,45 +26,15 @@ import xmltodict
 
 
 class PhoronixSensorGraphs:
-    """
+    r"""
     This class allows you plot the sensor data recorded by Phoronix Test Suite (PTS) during a
-    stress run. Requires Python > 3.10.
+    stress run. Requires Python >= 3.10.
 
-
-    The most important method of this class is `plot_sensor_data`. If you are on a Linux system,
-    and have executed a stress test as a non-root user, you can simply use this method without
-    going into further details:
-    >>> from PhoronixSensorGraphs import *
-    >>> psg = PhoronixSensorGraphs()
-    >>> psg.plot_sensor_data('Test_result_name', ('cpu.temp', 'gpu.temp', 'cpu.usage',  'gpu.usage', 'memory.usage', 'sys.temp'))
-    Don't forget to replace `Test_result_name` with the name of the stress test.
-
-    You can set a custom result directory using
-    >>> psg.res_path = "/path/to/result/directory"
-
-    You can set a custom file name for the data file using
-    >>> psg.res_file = "custom_filename.xml"
-
-    It is important to note that:
-    1. The file must be an XML file.
-    2. The result directory must have the following structure:
-
-        psg.res_path (i.e. the result directory)
-         |
-         +--- <Test_result_name>
-               |
-               +--- psg.res_file (i.e. the result file)
-
-    The program will throw an error if this directory structure is violated.
-    3. If you are on a Windows system, or you have executed a stress test as a root user,
-    you must set the directory name by yourself.
-
-    You can further set a custom layout of the subplots using:
-    >>> psg.plt_layout = (nrows, ncols)
-    where `nrows` is the number of rows, and `ncols` is the number of columns. Note that
-    `nrows`*`ncols` MUST be >= no. of subplots expected. Without this, the program will throw an
-    error. The default value is "auto", which allows the program to automatically determine the
-    best layout.
+    Attributes
+    ----------
+    res_file : str
+    res_path : str
+    plt_layout : str | tuple
     """
 
     def __init__(self):
@@ -85,6 +55,27 @@ class PhoronixSensorGraphs:
 
     @property
     def res_path(self):
+        """
+        The path to the result directory.
+
+        **Type:** `str`
+
+        **Default:** `"/home/<user_name>/.phoronix-test-suite/test-results/"`
+
+        You can set a custom result directory using
+
+            psg.res_path = "/path/to/result/directory"
+
+        The result directory must have the following structure:
+
+            psg.res_path (i.e. the result directory)
+             |
+             +--- <Test_result_name>
+                   |
+                   +--- psg.res_file (i.e. the result file)
+
+        The program will throw an error if this directory structure is violated.
+        """
         return self.__res_path
 
     @res_path.setter
@@ -94,17 +85,53 @@ class PhoronixSensorGraphs:
 
     @property
     def res_file(self):
+        """
+        The file name for the data file.
+
+        **Type:** `str`
+
+        **Default:** `"composite.xml"`
+
+        File type must be `.xml`.
+
+        You can set a custom file name for the data file using
+
+            psg.res_file = "custom_filename.xml"
+
+
+        """
         return self.__res_file
 
     @res_file.setter
-    def res_file(self, value: str):
-        if os.path.splitext(value)[1] != ".xml":
+    def res_file(self, new_filename: str):
+
+        if os.path.splitext(new_filename)[1] != ".xml":
             raise ValueError("File not of type `.xml`.")
-        self.__res_file = value
+
+        self.__res_file = new_filename
         print("New result filename set.")
 
     @property
     def plt_layout(self):
+        """
+        The layout of the subplots.
+
+        **Type:** `str` or `tuple`
+
+        **Default:** `"auto"`
+
+        Set a custom layout of the subplots using:
+
+            psg.plt_layout = (nrows, ncols)
+
+
+        where `nrows` is the number of rows, and `ncols` is the number of columns. Note that
+        `nrows`*`ncols` MUST be >= no. of subplots expected. Without this, the program will throw an
+        error. The default new_filename is "auto", which allows the program to automatically
+        determine the best layout.
+
+
+        """
         return self.__plt_layout
 
     @plt_layout.setter
@@ -148,11 +175,11 @@ class PhoronixSensorGraphs:
     def plot_sensor_data(self, res_name: str, sensors: tuple, cpu_usage_summary_only: bool = True,
                          cpu_usage_separate_plots: bool = False):
         """
-        A function to plot the results created by Phoronix Test Suite.
+        Plots the sensor data recorded by Phoronix Test Suite.
 
         Does NOT support the sensors `cpu.freq`, `cpu.peak-freq` and `gpu.freq` as of now. See
-        this issue:
-        https://github.com/phoronix-test-suite/phoronix-test-suite/issues/680
+        this issue: <a url="https://github.com/phoronix-test-suite/phoronix-test-suite/issues/680
+        ">https://github.com/phoronix-test-suite/phoronix-test-suite/issues/680</a>
 
         Parameters
         ----------
@@ -334,14 +361,14 @@ class PhoronixSensorGraphs:
                     ##############################################################################
 
                     while title != 'CPU Usage (Summary) Monitor':
-                        # Get data and plot for the current value of `res`
+                        # Get data and plot for the current new_filename of `res`
                         data_y, data_x = get_data(res)
                         lab = "CPU" + str(cpu_count)
 
                         line = plt.plot(data_x, data_y, '.-', label=lab)
                         line[0].set_color(clrs[cpu_count])
 
-                        # Initialise `res` to next value in the `results` list
+                        # Initialise `res` to next new_filename in the `results` list
                         i += 1
                         cpu_count += 1
                         res = results[i]
