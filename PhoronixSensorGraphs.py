@@ -26,12 +26,54 @@ import xmltodict
 
 
 class PhoronixSensorGraphs:
+    """
+    This class allows you plot the sensor data recorded by Phoronix Test Suite (PTS) during a
+    stress run. Requires Python > 3.10.
+
+
+    The most important method of this class is `plot_sensor_data`. If you are on a Linux system,
+    and have executed a stress test as a non-root user, you can simply use this method without
+    going into further details:
+    >>> from PhoronixSensorGraphs import *
+    >>> psg = PhoronixSensorGraphs()
+    >>> psg.plot_sensor_data('Test_result_name', ('cpu.temp', 'gpu.temp', 'cpu.usage',  \
+    'gpu.usage', 'memory.usage', 'sys.temp'))
+    Don't forget to replace `Test_result_name` with the name of the stress test.
+
+    You can set a custom result directory using
+    >>> psg.res_path = "/path/to/result/directory"
+
+    You can set a custom file name for the data file using
+    >>> psg.res_file = "custom_filename.xml"
+
+    It is important to note that:
+    1. The file must be an XML file.
+    2. The result directory must have the following structure:
+
+        psg.res_path (i.e. the result directory)
+         |
+         +--- <Test_result_name>
+               |
+               +--- psg.res_file (i.e. the result file)
+
+    The program will throw an error if this directory structure is violated.
+    3. If you are on a Windows system, or you have executed a stress test as a root user,
+    you must set the directory name by yourself.
+
+    You can further set a custom layout of the subplots using:
+    >>> psg.plt_layout = (nrows, ncols)
+    where `nrows` is the number of rows, and `ncols` is the number of columns. Note that
+    `nrows`*`ncols` MUST be >= no. of subplots expected. Without this, the program will throw an
+    error. The default value is "auto", which allows the program to automatically determine the
+    best layout.
+    """
 
     def __init__(self):
 
         self.__memo = {}
 
-        self.__res_path: str = "/home/" + pwd.getpwuid(os.getuid()).pw_name + "/.phoronix-test-suite/test-results/"
+        self.__res_path: str = "/home/" + pwd.getpwuid(
+            os.getuid()).pw_name + "/.phoronix-test-suite/test-results/"
 
         self.__res_file: str = "composite.xml"
 
@@ -39,9 +81,8 @@ class PhoronixSensorGraphs:
 
         if platform.system() == 'Windows' or platform.system() == 'Darwin':
             print("CAUTION!")
-            print(
-                "This program is designed to work on Linux. Please set the results directory and file name if using "
-                "in some other OS.")
+            print("This program is designed to work on Linux. Please set the results directory and "
+                  "file name if using in some other OS.")
 
     @property
     def res_path(self):
@@ -110,26 +151,25 @@ class PhoronixSensorGraphs:
         """
         A function to plot the results created by Phoronix Test Suite.
 
-        Does NOT support the sensors `cpu.freq`, `cpu.peak-freq` and `gpu.freq` as of now. See this issue:
+        Does NOT support the sensors `cpu.freq`, `cpu.peak-freq` and `gpu.freq` as of now. See
+        this issue:
         https://github.com/phoronix-test-suite/phoronix-test-suite/issues/680
-
-        Example usage: See file `main.py`.
 
         Parameters
         ----------
         res_name : str
             The test result name.
         sensors : tuple
-            The sensors to be potted; eg. (cpu.temp, gpu.usage). Note that some sensors, like cpu.usage and cpu.freq,
-            have entries for each core as well as a summary. By default, only the summary graph is plotted. To plot
-            data for each and every core, see `cpu_usage_summary_only` and `cpu_usage_separate_plots` parameters
-            for sensor cpu.usage.
+            The sensors to be potted; eg. (cpu.temp, gpu.usage). Note that some sensors,
+            like cpu.usage, have entries for each core as well as a summary. By
+            default, only the summary is plotted. To plot data for each and every core,
+            see `cpu_usage_summary_only` and `cpu_usage_separate_plots` parameters.
         cpu_usage_summary_only : bool, optional
-            Used only if plt_args contains 'cpu.usage'. If true, only the CPU Usage Summary data will be plotted, otherwise
-            per-CPU usage data will also be plotted.
+            Used only if plt_args contains 'cpu.usage'. If true, only the CPU Usage Summary data
+            will be plotted, otherwise per-CPU usage data will also be plotted.
         cpu_usage_separate_plots : bool, optional
-            Used only if cpu_usage_summary_only = True. If true, CPU Usage data for each CPU core/thread will be plotted in
-            separate graphs.
+            Used only if cpu_usage_summary_only = True. If true, CPU Usage data for each CPU
+            core/thread will be plotted in separate sub-plots.
         """
 
         if platform.system() == 'Windows':
@@ -236,7 +276,8 @@ class PhoronixSensorGraphs:
             if type(self.__plt_layout) == tuple:
                 plt_layout: tuple = self.__plt_layout
             else:
-                raise ValueError("Error in plt_layout: Should be a tuple, got some other type instead.")
+                raise ValueError(
+                    "Error in plt_layout: Should be a tuple, got some other type instead.")
 
         colour_list = sns.color_palette("viridis", n_colors=count_plots())
 
@@ -244,7 +285,8 @@ class PhoronixSensorGraphs:
         i = 0
 
         def get_data(result):
-            y_val = np.asarray(list(map(float, list(result['Data']['Entry'][-1]['Value'].split(",")))))
+            y_val = np.asarray(
+                list(map(float, list(result['Data']['Entry'][-1]['Value'].split(",")))))
             x_val = np.asarray([10 * (j + 2) for j in range(len(y_val))])
             return y_val, x_val
 
@@ -271,12 +313,13 @@ class PhoronixSensorGraphs:
                     i += 1
                     continue
 
-                ####################################################################################################
-                # Here, cpu_usage_summary_only = False, which means we have to plot graphs for each core/thread.
-                # We have to separately deal the case where we have to plot all the cores on one plot.
-                # If we are plotting each core on a separate plot, the normal plotting code will do the work,
-                # and we skip this section.
-                ####################################################################################################
+                ###################################################################################
+                # Here, cpu_usage_summary_only = False, which means we have to plot graphs for
+                # each core/thread. We have to separately deal the case where we have to plot
+                # all the cores on one plot.
+                # If we are plotting each core on a separate plot, the normal plotting code will
+                # do the work, and we skip this section.
+                ###################################################################################
                 if not cpu_usage_summary_only and not cpu_usage_separate_plots:
 
                     clrs = sns.color_palette('rocket_r', n_colors=get_cpu_cores() + 2)
@@ -285,11 +328,12 @@ class PhoronixSensorGraphs:
 
                     cpu_count = 0
 
-                    ############################################################################################
-                    # When we exit from this while loop, the `res` variable will have the data for the
-                    # CPU Usage (Summary). This is based on the fact that Phoronix Test Suite places the
-                    # summary data after listing the data for cores separately.
-                    ############################################################################################
+                    #############################################################################
+                    # When we exit from this while loop, the `res` variable will have the data
+                    # for the CPU Usage (Summary). This is based on the fact that Phoronix Test
+                    # Suite places the summary data after listing the data for cores separately.
+                    ##############################################################################
+
                     while title != 'CPU Usage (Summary) Monitor':
                         # Get data and plot for the current value of `res`
                         data_y, data_x = get_data(res)
@@ -307,7 +351,8 @@ class PhoronixSensorGraphs:
                     plt.title("CPU per-core usage")
                     plt.gca().yaxis.grid(True)
                     plt.ylabel(res['Scale'])
-                    plt.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=False)
+                    plt.tick_params(axis='x', which='both', bottom=False, top=False,
+                                    labelbottom=False)
                     plt.legend(loc="lower right", ncol=2)
                     count += 1
 
@@ -321,12 +366,11 @@ class PhoronixSensorGraphs:
 
             # Remove ticks and labels from x-axis as they are arbitrary.
             # Courtesy: https://stackoverflow.com/a/12998531/8387076
-            plt.tick_params(
-                axis='x',  # changes apply to the x-axis
-                which='both',  # both major and minor ticks are affected
-                bottom=False,  # ticks along the bottom edge are off
-                top=False,  # ticks along the top edge are off
-                labelbottom=False)  # labels along the bottom edge are off
+            plt.tick_params(axis='x',  # changes apply to the x-axis
+                            which='both',  # both major and minor ticks are affected
+                            bottom=False,  # ticks along the bottom edge are off
+                            top=False,  # ticks along the top edge are off
+                            labelbottom=False)  # labels along the bottom edge are off
 
             # Switch on grid for the y-axis ONLY.
             # Adapted from: https://stackoverflow.com/a/25799781/8387076
@@ -340,7 +384,8 @@ class PhoronixSensorGraphs:
 
         # Delete subplot(s) which do not have any plot
         # Adapted from: https://stackoverflow.com/a/69886723/8387076
-        try:  # Necessary because if we have to plot one parameter, axs.flat will throw an exception.
+        try:  # Necessary because if we have to plot one parameter, axs.flat will throw an
+            # exception.
             for ax in axs.flat:
                 if not bool(ax.has_data()):
                     fig.delaxes(ax)  # delete if nothing is plotted in the ax object

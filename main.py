@@ -1,7 +1,6 @@
 from PhoronixSensorGraphs import PhoronixSensorGraphs
 
 if __name__ == '__main__':
-
     # Create an instance of the class:
     psg = PhoronixSensorGraphs()
 
@@ -14,6 +13,6 @@ if __name__ == '__main__':
     # Optionally set the layout of the subplots:
     # psg.plt_layout = "auto"
 
-    # Call the function with the required parameters:
-    psg.plot_sensor_data('Test_result_name',
-                         ('cpu.temp', 'gpu.temp', 'cpu.usage', 'gpu.usage', 'memory.usage', 'sys.temp'))
+    # Call the function:
+    psg.plot_sensor_data('Test_result_name', ('cpu.temp', 'gpu.temp', 'cpu.usage', 'gpu.usage',
+                                              'memory.usage', 'sys.temp'))
