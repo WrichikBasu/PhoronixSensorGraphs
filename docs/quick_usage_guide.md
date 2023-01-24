@@ -5,7 +5,12 @@
 **1.** Clone the repository:
 
 ```bash
-git clone git@github.com:WrichikBasu/PhoronixSensorGraphs.git
+# Get the latest tag (https://stackoverflow.com/a/67404585/8387076)
+tag=$( curl --silent  "https://api.github.com/repos/WrichikBasu/PhoronixSensorGraphs/tags" | jq -r '.[0].name' )
+
+# Clone the specific tag (https://stackoverflow.com/a/65397613/8387076)
+git clone --depth 1 --branch $tag git@github.com:WrichikBasu/PhoronixSensorGraphs.git
+
 cd PhoronixSensorGraphs/ 
 ```
     
