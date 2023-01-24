@@ -24,36 +24,40 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  download_artifact:
+          
+  # Single deploy job since we're just deploying
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    steps:  # https://github.com/dawidd6/action-download-artifact#usage
-      - name: Download artifact
+    steps:
+    
+      - name: Download artifact  # https://github.com/dawidd6/action-download-artifact#usage
         id: download-artifact
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: mkdocs_build_upload_ci.yml
           workflow_conclusion: success
           name: mkdocs_build_artifact
+          path: .deploy_gh-pages_cache
           if_no_artifact_found: fail
-  # Single deploy job since we're just deploying
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    needs: download_artifact
-    runs-on: ubuntu-latest
-    steps:
+          
+      - name: Get build cache
+        id: get_build_cache
+        
       - name: Checkout
         uses: actions/checkout@v3
+        
       - name: Setup Pages
         uses: actions/configure-pages@v2
+        
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          # Upload entire repository
-          path: '/site'
+          # Upload static site directory
+          path: '.deploy_gh-pages_cache/site/'
+          
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
-        with:
-          artifact_name: mkdocs_build_artifact
