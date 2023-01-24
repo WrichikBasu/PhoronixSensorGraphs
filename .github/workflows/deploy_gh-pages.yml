@@ -35,7 +35,8 @@ jobs:
       - name: Checkout repo
         id: checkout_repo
         uses: actions/checkout@v3
-    
+      - run: pwd
+      - run: ls -als
       - name: Download artifact  # https://github.com/dawidd6/action-download-artifact#usage
         id: download-artifact
         uses: dawidd6/action-download-artifact@v2
@@ -44,10 +45,12 @@ jobs:
           workflow_conclusion: success
           name: mkdocs_build_artifact
           if_no_artifact_found: fail
-        
-      - name: Commit to Github Pages
-        uses: EndBug/add-and-commit@v9.1.1
-        id: commit_gh_pages
-        with:
-          add: 'site'
-          new_branch: 'gh-pages'
+      - run: pwd
+      - run: ls -als
+#      - name: Commit to Github Pages
+#        uses: EndBug/add-and-commit@v9.1.1
+#        id: commit_gh_pages
+#        with:
+#          add: 'site'
+#          new_branch: 'gh-pages'
+#          push: false
