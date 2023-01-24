@@ -55,4 +55,4 @@ jobs:
         with:
           add: '. -f'
           new_branch: 'gh-pages'
-#          push: false
+          push: -u --force origin gh-pages
