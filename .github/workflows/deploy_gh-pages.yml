@@ -53,7 +53,7 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload static site directory
-          path: '.deploy_gh-pages_cache/site/'
+          path: '.'
           
       - name: Deploy to GitHub Pages
         id: deployment
