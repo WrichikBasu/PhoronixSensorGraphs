@@ -32,6 +32,9 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repo
+        id: checkout_repo
+        uses: actions/checkout@v3
     
       - name: Download artifact  # https://github.com/dawidd6/action-download-artifact#usage
         id: download-artifact
@@ -48,4 +51,3 @@ jobs:
         with:
           add: 'site'
           new_branch: 'gh-pages'
-          pull: '--rebase'
