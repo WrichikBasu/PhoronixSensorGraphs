@@ -23,4 +23,6 @@ jobs:
       - name: Upload build directory
         uses: actions/upload-artifact@v3
         with:
+          name: mkdocs_build_artifact
           path: site/
+          retention-days: 1
