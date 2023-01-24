@@ -48,3 +48,4 @@ jobs:
         with:
           add: 'site'
           new_branch: 'gh-pages'
+          pull: '--rebase'
