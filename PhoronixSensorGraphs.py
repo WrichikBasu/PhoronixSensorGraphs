@@ -186,16 +186,16 @@ class PhoronixSensorGraphs:
         res_name : str
             The test result name.
         sensors : tuple
-            The sensors to be potted; eg. (cpu.temp, gpu.usage). Note that some sensors,
+            The sensors to be potted; eg. `('cpu.temp', 'gpu.usage')`. Note that some sensors,
             like cpu.usage, have entries for each core as well as a summary. By
             default, only the summary is plotted. To plot data for each and every core,
             see `cpu_usage_summary_only` and `cpu_usage_separate_plots` parameters.
         cpu_usage_summary_only : bool, optional
-            Used only if plt_args contains 'cpu.usage'. If true, only the CPU Usage Summary data
+            Used only if `sensors` contains `cpu.usage`. If `True`, only the CPU Usage Summary data
             will be plotted, otherwise per-CPU usage data will also be plotted.
         cpu_usage_separate_plots : bool, optional
-            Used only if cpu_usage_summary_only = True. If true, CPU Usage data for each CPU
-            core/thread will be plotted in separate sub-plots.
+            Used only if `cpu_usage_summary_only = True`. If `set to True`, CPU Usage data for
+            each CPU core/thread will be plotted in separate sub-plots.
         """
 
         if platform.system() == 'Windows':
