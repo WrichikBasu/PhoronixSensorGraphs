@@ -1,0 +1,26 @@
+name: Mkdocs Build & Upload CI
+on:
+  push:
+    branches:
+      - master 
+      - main
+permissions:
+  contents: write
+jobs:
+  build_and_upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - uses: actions/cache@v2
+        with:
+          key: ${{ github.ref }}
+          path: .cache
+      - run: pip install mkdocs "mkdocstrings[python]" mkdocs-material 
+      - run: mkdocs build
+      - name: Upload build directory
+        uses: actions/upload-artifact@v3
+        with:
+          path: site/
