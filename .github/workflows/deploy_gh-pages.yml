@@ -44,6 +44,7 @@ jobs:
           workflow: mkdocs_build_upload_ci.yml
           workflow_conclusion: success
           name: mkdocs_build_artifact
+          path: site
           if_no_artifact_found: fail
       - run: pwd
       - run: ls -als
