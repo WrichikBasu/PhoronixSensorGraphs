@@ -23,7 +23,7 @@ plugins:
             show_root_toc_entry: false
             members_order: "source"
             docstring_style: "numpy"
-            filters: ["!^__"]
+            filters: ["^(?!__).*$"]
 
 nav:
   - Home: index.md

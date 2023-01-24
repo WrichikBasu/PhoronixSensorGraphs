@@ -41,12 +41,12 @@ class PhoronixSensorGraphs:
 
         self.__memo = {}
 
-        self.__res_path: str = "/home/" + pwd.getpwuid(
+        self._res_path: str = "/home/" + pwd.getpwuid(
             os.getuid()).pw_name + "/.phoronix-test-suite/test-results/"
 
-        self.__res_file: str = "composite.xml"
+        self._res_file: str = "composite.xml"
 
-        self.__plt_layout: str | tuple = "auto"
+        self._plt_layout: str | tuple = "auto"
 
         if platform.system() == 'Windows' or platform.system() == 'Darwin':
             print("CAUTION!")
@@ -76,11 +76,11 @@ class PhoronixSensorGraphs:
 
         The program will throw an error if this directory structure is violated.
         """
-        return self.__res_path
+        return self._res_path
 
     @res_path.setter
     def res_path(self, value: str):
-        self.__res_path = value
+        self._res_path = value
         print("New results directory set.")
 
     @property
@@ -100,7 +100,7 @@ class PhoronixSensorGraphs:
 
 
         """
-        return self.__res_file
+        return self._res_file
 
     @res_file.setter
     def res_file(self, new_filename: str):
@@ -108,7 +108,7 @@ class PhoronixSensorGraphs:
         if os.path.splitext(new_filename)[1] != ".xml":
             raise ValueError("File not of type `.xml`.")
 
-        self.__res_file = new_filename
+        self._res_file = new_filename
         print("New result filename set.")
 
     @property
@@ -132,11 +132,11 @@ class PhoronixSensorGraphs:
 
 
         """
-        return self.__plt_layout
+        return self._plt_layout
 
     @plt_layout.setter
     def plt_layout(self, value: str | tuple):
-        self.__plt_layout = value
+        self._plt_layout = value
         print("New plot layout set.")
 
     def __dp(self, n, left) -> tuple:  # returns tuple (cost, [factors])
@@ -194,16 +194,16 @@ class PhoronixSensorGraphs:
             Used only if `sensors` contains `cpu.usage`. If `True`, only the CPU Usage Summary data
             will be plotted, otherwise per-CPU usage data will also be plotted.
         cpu_usage_separate_plots : bool, optional
-            Used only if `cpu_usage_summary_only = True`. If `set to True`, CPU Usage data for
+            Used only if `cpu_usage_summary_only = True`. If set to `True`, CPU Usage data for
             each CPU core/thread will be plotted in separate sub-plots.
         """
 
         if platform.system() == 'Windows':
-            file = self.__res_path + res_name + "\\" + self.__res_file
+            file = self._res_path + res_name + "\\" + self._res_file
             if "/" in file:
                 raise ValueError("File path not set properly on Windows.")
         else:
-            file = self.__res_path + res_name + "/" + self.__res_file
+            file = self._res_path + res_name + "/" + self._res_file
 
         with open(file) as fd:
             doc = xmltodict.parse(fd.read())  # Read the xml file
@@ -296,11 +296,11 @@ class PhoronixSensorGraphs:
                 return factors[0], int(factors[1])
 
         # Set the layout:
-        if self.__plt_layout == "auto":
+        if self._plt_layout == "auto":
             plt_layout: tuple = get_plot_layout()
         else:
-            if type(self.__plt_layout) == tuple:
-                plt_layout: tuple = self.__plt_layout
+            if type(self._plt_layout) == tuple:
+                plt_layout: tuple = self._plt_layout
             else:
                 raise ValueError(
                     "Error in plt_layout: Should be a tuple, got some other type instead.")
