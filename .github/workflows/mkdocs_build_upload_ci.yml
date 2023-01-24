@@ -26,19 +26,3 @@ jobs:
           name: mkdocs_build_artifact
           path: site/
           retention-days: 1
-  
-  # Single deploy job since we're just deploying
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-    
-      - name: Download artifact  # https://github.com/dawidd6/action-download-artifact#usage
-        id: download-artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: mkdocs_build_artifact
-        
-      - name: Commit to Github Pages
-        uses: EndBug/add-and-commit@v9.1.1
-        id: commit_gh_pages
-        add: 'site'
