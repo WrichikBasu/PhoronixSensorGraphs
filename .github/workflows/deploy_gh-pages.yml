@@ -52,6 +52,6 @@ jobs:
         uses: EndBug/add-and-commit@v9.1.1
         id: commit_gh_pages
         with:
-          add: 'site'
+          add: 'site -f'
           new_branch: 'gh-pages'
 #          push: false
