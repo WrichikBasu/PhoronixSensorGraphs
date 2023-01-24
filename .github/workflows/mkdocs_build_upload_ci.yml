@@ -20,9 +20,9 @@ jobs:
           path: .cache
       - run: pip install mkdocs "mkdocstrings[python]" mkdocs-material 
       - run: mkdocs build
-      - name: Commit to Github Pages
-        uses: EndBug/add-and-commit@v9.1.1
-        id: commit_gh_pages
+      - name: Upload build directory
+        uses: actions/upload-artifact@v3
         with:
-          add: 'site'
-          new_branch: 'gh-pages'
+          name: mkdocs_build_artifact
+          path: site/
+          retention-days: 1

@@ -1,0 +1,53 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: Deploy gh-pages
+
+# Only trigger, when the build workflow succeeded
+# 
+on:
+  workflow_run:
+    workflows: ["Mkdocs Build & Upload CI"]
+    types:
+      - completed
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+          
+  # Single deploy job since we're just deploying
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        id: checkout_repo
+        uses: actions/checkout@v3
+    
+      - name: Download artifact  # https://github.com/dawidd6/action-download-artifact#usage
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: mkdocs_build_upload_ci.yml
+          workflow_conclusion: success
+          name: mkdocs_build_artifact
+          if_no_artifact_found: fail
+        
+      - name: Commit to Github Pages
+        uses: EndBug/add-and-commit@v9.1.1
+        id: commit_gh_pages
+        with:
+          add: 'site'
+          new_branch: 'gh-pages'
