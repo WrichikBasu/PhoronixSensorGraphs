@@ -1,4 +1,7 @@
 site_name: PhoronixSensorGraphs
+site_author: Wrichik Basu
+copyright: "&#169; 2023 Wrichik Basu"
+repo_url: https://github.com/WrichikBasu/PhoronixSensorGraphs
 
 theme:
   name: "material"
@@ -13,6 +16,7 @@ theme:
 #            show_source: false
 
 plugins:
+  - search
   - mkdocstrings:
       handlers:
         python:
