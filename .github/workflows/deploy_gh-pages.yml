@@ -40,21 +40,10 @@ jobs:
           workflow: mkdocs_build_upload_ci.yml
           workflow_conclusion: success
           name: mkdocs_build_artifact
-          path: .deploy_gh-pages_cache
           if_no_artifact_found: fail
         
-      - name: Checkout
-        uses: actions/checkout@v3
-        
-      - name: Setup Pages
-        uses: actions/configure-pages@v2
-        
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          # Upload static site directory
-          path: '.'
-          
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
+      - name: Commit to Github Pages
+        uses: EndBug/add-and-commit@v9.1.1
+        id: commit_gh_pages
+        add: 'site'
+        new_branch: 'gh-pages'
