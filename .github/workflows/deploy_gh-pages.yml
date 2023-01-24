@@ -42,9 +42,6 @@ jobs:
           name: mkdocs_build_artifact
           path: .deploy_gh-pages_cache
           if_no_artifact_found: fail
-          
-      - name: Get build cache
-        id: get_build_cache
         
       - name: Checkout
         uses: actions/checkout@v3
