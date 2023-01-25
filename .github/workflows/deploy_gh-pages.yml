@@ -46,12 +46,14 @@ jobs:
           name: mkdocs_build_artifact
           path: site
           if_no_artifact_found: fail
-#      - run: pwd
-#      - run: ls -als
+      - run: pwd
+      - run: ls -als
       - name: Get last commit SHA
         id: get_commit_SHA
         run: echo "COMMIT_SHA=$( git log -n1 --format="%h" )" >> $GITHUB_OUTPUT
       - run: cd site/
+      - run: pwd
+      - run: ls -als
       - name: Commit to Github Pages
         uses: EndBug/add-and-commit@v9.1.1
         id: commit_gh_pages
