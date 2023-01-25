@@ -1,7 +1,7 @@
 # Phoronix Sensor Graphs
 
 ![GitHub Workflow Status (with branch)](https://img.shields.io/github/actions/workflow/status/WrichikBasu/PhoronixSensorGraphs/mkdocs_build_upload_ci.yml?branch=main&label=mkdocs%20build&style=plastic)
-![GitHub Workflow Status (with branch)](https://img.shields.io/github/actions/workflow/status/WrichikBasu/PhoronixSensorGraphs/deploy_gh-pages.yml?branch=main&label=push%20to%20gh-pages&style=plastic)
+![GitHub Workflow Status (with branch)](https://img.shields.io/github/actions/workflow/status/WrichikBasu/PhoronixSensorGraphs/push_gh-pages.yml?branch=main&label=push%20to%20gh-pages&style=plastic)
 ![GitHub deployments](https://img.shields.io/github/deployments/WrichikBasu/PhoronixSensorGraphs/github-pages?label=deploy%20to%20Github%20Pages)
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/WrichikBasu/PhoronixSensorGraphs)
