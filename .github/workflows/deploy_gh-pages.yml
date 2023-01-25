@@ -51,14 +51,14 @@ jobs:
       - name: Get last commit SHA
         id: get_commit_SHA
         run: echo "COMMIT_SHA=$( git log -n1 --format="%h" )" >> $GITHUB_OUTPUT
-      - run: cd site/
+      - run: cp site/* ./
       - run: pwd
       - run: ls -als
       - name: Commit to Github Pages
         uses: EndBug/add-and-commit@v9.1.1
         id: commit_gh_pages
         with:
-          add: '. -f'
+          add: '.'
           new_branch: 'gh-pages'
           message: 'Deployed ${{ steps.get_commit_SHA.outputs.COMMIT_SHA }} via ${{ github.workflow }}'
           push: -u --force origin gh-pages
