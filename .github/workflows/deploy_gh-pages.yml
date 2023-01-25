@@ -35,6 +35,8 @@ jobs:
       - name: Checkout repo
         id: checkout_repo
         uses: actions/checkout@v3
+        with:
+          ref: 'gh-pages'
 #      - run: pwd
 #      - run: ls -als
       - name: Download artifact  # https://github.com/dawidd6/action-download-artifact#usage
@@ -51,7 +53,7 @@ jobs:
       - name: Get last commit SHA
         id: get_commit_SHA
         run: echo "COMMIT_SHA=$( git log -n1 --format="%h" )" >> $GITHUB_OUTPUT
-      - run: rm -r $(ls -A | grep -vEx "(site)|(.git)")
+#      - run: rm -r $(ls -A | grep -vEx "(site)|(.git)")
       - run: cp -r site/* ./
       - run: rm -r site/
       - run: pwd
@@ -61,6 +63,6 @@ jobs:
         id: commit_gh_pages
         with:
           add: '.'
-          new_branch: 'gh-pages'
+#          new_branch: 'gh-pages'
           message: 'Deployed ${{ steps.get_commit_SHA.outputs.COMMIT_SHA }} via ${{ github.workflow }}'
           push: -u origin gh-pages
