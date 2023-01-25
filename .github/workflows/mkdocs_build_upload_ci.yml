@@ -1,4 +1,4 @@
-name: Mkdocs Build & Upload CI
+name: Mkdocs Build
 on:
   push:
     branches:
