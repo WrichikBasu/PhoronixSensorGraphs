@@ -32,15 +32,20 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        id: checkout_repo
+      - name: Checkout main
+        uses: actions/checkout@v3
+      - name: Get last commit SHA
+        id: get_commit_SHA
+        run: echo "COMMIT_SHA=$( git log -n1 --format="%h" )" >> $GITHUB_OUTPUT
+      - name: Checkout gh-pages
+        id: checkout_gh_pages
         uses: actions/checkout@v3
         with:
           ref: 'gh-pages'
-#      - run: pwd
-#      - run: ls -als
+      - run: pwd
+      - run: ls -als
       - name: Download artifact  # https://github.com/dawidd6/action-download-artifact#usage
-        id: download-artifact
+        id: download_artifact
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: mkdocs_build_upload_ci.yml
@@ -50,11 +55,8 @@ jobs:
           if_no_artifact_found: fail
       - run: pwd
       - run: ls -als
-      - name: Get last commit SHA
-        id: get_commit_SHA
-        run: echo "COMMIT_SHA=$( git log -n1 --format="%h" )" >> $GITHUB_OUTPUT
 #      - run: rm -r $(ls -A | grep -vEx "(site)|(.git)")
-      - run: cp -r site/* ./
+      - run: yes | cp -r site/* ./  # May ask confirmation while replacing files
       - run: rm -r site/
       - run: pwd
       - run: ls -als
