@@ -35,8 +35,8 @@ jobs:
       - name: Checkout repo
         id: checkout_repo
         uses: actions/checkout@v3
-      - run: pwd
-      - run: ls -als
+#      - run: pwd
+#      - run: ls -als
       - name: Download artifact  # https://github.com/dawidd6/action-download-artifact#usage
         id: download-artifact
         uses: dawidd6/action-download-artifact@v2
@@ -46,8 +46,11 @@ jobs:
           name: mkdocs_build_artifact
           path: site
           if_no_artifact_found: fail
-      - run: pwd
-      - run: ls -als
+#      - run: pwd
+#      - run: ls -als
+      - name: Get last commit SHA
+        id: get_commit_SHA
+        run: echo "COMMIT_SHA=$( git log -n1 --format="%h" )" >> $GITHUB_OUTPUT
       - run: cd site/
       - name: Commit to Github Pages
         uses: EndBug/add-and-commit@v9.1.1
@@ -55,4 +58,5 @@ jobs:
         with:
           add: '. -f'
           new_branch: 'gh-pages'
+          message: 'Deployed ${{ steps.get_commit_SHA.outputs.COMMIT_SHA }} via ${{ github.workflow }}'
           push: -u --force origin gh-pages
