@@ -42,8 +42,8 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: 'gh-pages'
-      - run: pwd
-      - run: ls -als
+#      - run: pwd
+#      - run: ls -als
       - name: Download artifact  # https://github.com/dawidd6/action-download-artifact#usage
         id: download_artifact
         uses: dawidd6/action-download-artifact@v2
@@ -53,13 +53,13 @@ jobs:
           name: mkdocs_build_artifact
           path: site
           if_no_artifact_found: fail
-      - run: pwd
-      - run: ls -als
+#      - run: pwd
+#      - run: ls -als
 #      - run: rm -r $(ls -A | grep -vEx "(site)|(.git)")
       - run: yes | cp -r site/* ./  # May ask confirmation while replacing files
       - run: rm -r site/
-      - run: pwd
-      - run: ls -als
+#      - run: pwd
+#      - run: ls -als
       - name: Commit to Github Pages
         uses: EndBug/add-and-commit@v9.1.1
         id: commit_gh_pages
