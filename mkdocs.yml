@@ -2,6 +2,7 @@ site_name: PhoronixSensorGraphs
 site_author: Wrichik Basu
 copyright: "&#169; 2023 Wrichik Basu"
 repo_url: https://github.com/WrichikBasu/PhoronixSensorGraphs
+repo_name: WrichikBasu/PhoronixSensorGraphs
 
 theme:
   name: "material"
