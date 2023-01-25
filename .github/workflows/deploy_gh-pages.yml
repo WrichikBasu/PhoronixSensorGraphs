@@ -51,7 +51,7 @@ jobs:
       - name: Get last commit SHA
         id: get_commit_SHA
         run: echo "COMMIT_SHA=$( git log -n1 --format="%h" )" >> $GITHUB_OUTPUT
-      - run: cp site/* ./
+      - run: cp -r site/* ./
       - run: pwd
       - run: ls -als
       - name: Commit to Github Pages
