@@ -53,6 +53,7 @@ jobs:
         run: echo "COMMIT_SHA=$( git log -n1 --format="%h" )" >> $GITHUB_OUTPUT
       - run: rm -r $(ls -A | grep -vEx "(site)|(.git)")
       - run: cp -r site/* ./
+      - run: rm -r site/
       - run: pwd
       - run: ls -als
       - name: Commit to Github Pages
@@ -62,4 +63,4 @@ jobs:
           add: '.'
           new_branch: 'gh-pages'
           message: 'Deployed ${{ steps.get_commit_SHA.outputs.COMMIT_SHA }} via ${{ github.workflow }}'
-          push: -u --force origin gh-pages
+          push: -u origin gh-pages
