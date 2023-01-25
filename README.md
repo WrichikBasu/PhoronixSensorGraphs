@@ -1,8 +1,10 @@
 # Phoronix Sensor Graphs
 
-![GitHub Workflow Status (with branch)](https://img.shields.io/github/actions/workflow/status/WrichikBasu/PhoronixSensorGraphs/mkdocs_build_upload_ci.yml?branch=main&label=mkdocs%20build&style=plastic)
-![GitHub Workflow Status (with branch)](https://img.shields.io/github/actions/workflow/status/WrichikBasu/PhoronixSensorGraphs/push_gh-pages.yml?branch=main&label=push%20to%20gh-pages&style=plastic)
-![GitHub deployments](https://img.shields.io/github/deployments/WrichikBasu/PhoronixSensorGraphs/github-pages?label=deploy%20to%20Github%20Pages)
+[![CodeQL](https://github.com/WrichikBasu/PhoronixSensorGraphs/actions/workflows/codeql.yml/badge.svg)](https://github.com/WrichikBasu/PhoronixSensorGraphs/actions/workflows/codeql.yml)
+[![Mkdocs Build](https://github.com/WrichikBasu/PhoronixSensorGraphs/actions/workflows/mkdocs_build_upload_ci.yml/badge.svg)](https://github.com/WrichikBasu/PhoronixSensorGraphs/actions/workflows/mkdocs_build_upload_ci.yml)
+[![Push to gh-pages](https://github.com/WrichikBasu/PhoronixSensorGraphs/actions/workflows/push_gh-pages.yml/badge.svg)](https://github.com/WrichikBasu/PhoronixSensorGraphs/actions/workflows/push_gh-pages.yml)
+![GitHub deployments](https://img.shields.io/github/deployments/WrichikBasu/PhoronixSensorGraphs/github-pages?label=Deploy%20on%20github-pages&logo=Github)
+
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/WrichikBasu/PhoronixSensorGraphs)
 ![GitHub Release Date](https://img.shields.io/github/release-date/WrichikBasu/PhoronixSensorGraphs)
