@@ -1,5 +1,5 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: Deploy gh-pages
+name: Push to gh-pages
 
 # Only trigger, when the build workflow succeeded
 # 
@@ -31,6 +31,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout main
         uses: actions/checkout@v3
@@ -67,4 +68,5 @@ jobs:
           add: '.'
 #          new_branch: 'gh-pages'
           message: 'Deployed ${{ steps.get_commit_SHA.outputs.COMMIT_SHA }} via ${{ github.workflow }}'
+          default_author: github_actions
           push: -u origin gh-pages
