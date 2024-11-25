@@ -45,7 +45,7 @@ jobs:
 #      - run: ls -als
       - name: Download artifact  # https://github.com/dawidd6/action-download-artifact#usage
         id: download_artifact
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v6
         with:
           workflow: mkdocs_build_upload_ci.yml
           workflow_conclusion: success
